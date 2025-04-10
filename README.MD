@@ -47,7 +47,7 @@ Checks if a client is eligible based on the submitted data.
 }
 ```
 
-#### Expected response (eligible):
+#### Example response (eligible):
 
 ```json
 {
@@ -56,14 +56,13 @@ Checks if a client is eligible based on the submitted data.
 }
 ```
 
-#### Expected response (not eligible):
+#### Example response (not eligible):
 
 ```json
 {
   "eligible": false,
   "ineligibilityReasons": [
-    "Classe de consumo não aceita",
-    "Modalidade tarifária não aceita"
+    "Classe de consumo não aceita"
   ]
 }
 ```
