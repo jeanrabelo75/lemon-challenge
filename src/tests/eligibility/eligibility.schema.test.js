@@ -1,8 +1,8 @@
-import { EligibilityInputSchema } from '../../dtos/eligibility.input.dto.js';
+import { EligibilityInputDTO } from '../../dtos/eligibility.input.dto.js';
 
 describe('EligibilityInputSchema', () => {
   it('should reject invalid document number', () => {
-    const result = EligibilityInputSchema.safeParse({
+    const result = EligibilityInputDTO.safeParse({
       documentNumber: '12345678900',
       connectionType: 'biphase',
       consumptionClass: 'commercial',
@@ -15,7 +15,7 @@ describe('EligibilityInputSchema', () => {
   });
 
   it('should accept valid input data', () => {
-    const result = EligibilityInputSchema.safeParse({
+    const result = EligibilityInputDTO.safeParse({
       documentNumber: '21554495008',
       connectionType: 'biphase',
       consumptionClass: 'commercial',

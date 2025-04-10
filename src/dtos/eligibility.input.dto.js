@@ -6,7 +6,7 @@ import {
   ConnectionTypeEnum,
 } from '../domain/eligibility.enums.js';
 
-export const EligibilityInputSchema = z.object({
+export const EligibilityInputDTO = z.object({
   documentNumber: z
     .string({ required_error: 'O número do documento é obrigatório' })
     .refine(value => cpf.isValid(value) || cnpj.isValid(value), {
