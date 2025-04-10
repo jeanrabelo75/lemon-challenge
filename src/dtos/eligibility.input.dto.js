@@ -7,10 +7,9 @@ import {
 import { cpf, cnpj } from 'cpf-cnpj-validator';
 
 export const EligibilityInputSchema = z.object({
-  documentNumber: z.string().refine(
-    value => cpf.isValid(value) || cnpj.isValid(value),
-    { message: 'Invalid CPF or CNPJ' }
-  ),
+  documentNumber: z
+    .string()
+    .refine(value => cpf.isValid(value) || cnpj.isValid(value), { message: 'Invalid CPF or CNPJ' }),
 
   connectionType: z.enum([
     ConnectionTypeEnum.MONOPHASE,
