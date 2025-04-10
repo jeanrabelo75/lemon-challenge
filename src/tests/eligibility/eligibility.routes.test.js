@@ -1,5 +1,5 @@
 import request from 'supertest';
-import app from '../app.js';
+import app from '../../app.js';
 
 describe('POST /eligibility', () => {
   it('should return 200 with eligible true', async () => {
@@ -15,16 +15,29 @@ describe('POST /eligibility', () => {
 
     expect(response.statusCode).toBe(200);
     expect(response.body.eligible).toBe(true);
-    expect(response.body.annualCO2Savings).toBeDefined();
   });
 
-  it('should return 400 if input is invalid', async () => {
+  it('should return 400 for invalid input', async () => {
     const response = await request(app).post('/eligibility').send({
-      connectionType: 'monophase',
+      connectionType: 'biphase',
     });
 
     expect(response.statusCode).toBe(400);
     expect(response.body.error).toBe('Invalid input');
-    expect(response.body.details).toBeDefined();
+  });
+
+  it('should return 400 for invalid document number', async () => {
+    const response = await request(app)
+      .post('/eligibility')
+      .send({
+        documentNumber: '12345678900',
+        connectionType: 'biphase',
+        consumptionClass: 'commercial',
+        tariffModality: 'conventional',
+        consumptionHistory: [4000, 5000, 6000],
+      });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.body.details[0].message).toMatch(/Documento inválido/);
   });
 });

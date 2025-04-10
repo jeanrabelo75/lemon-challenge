@@ -1,4 +1,4 @@
-import { execute } from '../services/eligibility.service.js';
+import { execute } from '../../services/eligibility.service.js';
 
 describe('Eligibility Service', () => {
   it('should return eligible = true and correct CO2 savings', () => {
