@@ -24,6 +24,8 @@ Thumbs.db
 
 # Jest cache
 .jest/
+coverage/
+
 
 # Prettier & ESLint cache
 .prettiercache
