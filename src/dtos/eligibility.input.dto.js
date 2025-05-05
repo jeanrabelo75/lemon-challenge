@@ -1,10 +1,15 @@
 import { z } from 'zod';
 import { cpf, cnpj } from 'cpf-cnpj-validator';
 import {
-  ConsumptionClassEnum,
-  TariffModalityEnum,
-  ConnectionTypeEnum,
+  ConsumptionClasses,
+  TariffModalities,
+  ConnectionTypes,
 } from '../domain/eligibility.enums.js';
+
+const consumptionClassNames = ConsumptionClasses.map(c => c.name);
+const consumptionSubClassNames = ConsumptionClasses.flatMap(c => c.subclasses);
+const tariffModalityNames = TariffModalities.map(t => t.name);
+const connectionTypeNames = Object.keys(ConnectionTypes);
 
 export const EligibilityInputDTO = z.object({
   documentNumber: z
@@ -13,45 +18,25 @@ export const EligibilityInputDTO = z.object({
       message: 'Documento inválido. Forneça um CPF ou CNPJ válido.',
     }),
 
-  connectionType: z.enum(
-    [ConnectionTypeEnum.MONOPHASE, ConnectionTypeEnum.BIPHASE, ConnectionTypeEnum.TRIPHASE],
-    {
-      errorMap: () => ({
-        message: 'Tipo de conexão inválido. Use: monophase, biphase ou triphase.',
-      }),
-    }
-  ),
+  connectionType: z
+    .string({ required_error: 'Tipo de conexão é obrigatório' })
+    .refine(val => connectionTypeNames.includes(val), {
+      message: 'Tipo de conexão inválido. Use: monophase, biphase ou triphase.',
+    }),
 
-  consumptionClass: z.enum(
-    [
-      ConsumptionClassEnum.RESIDENTIAL,
-      ConsumptionClassEnum.INDUSTRIAL,
-      ConsumptionClassEnum.COMMERCIAL,
-      ConsumptionClassEnum.RURAL,
-      ConsumptionClassEnum.PUBLIC_POWER,
-    ],
-    {
-      errorMap: () => ({
-        message:
-          'Classe de consumo inválida. Valores permitidos: residential, industrial, commercial, rural, poderPublico.',
-      }),
-    }
-  ),
+  consumptionClass: z
+    .string({ required_error: 'Classe de consumo é obrigatória' })
+    .refine(val => consumptionClassNames.includes(val), {
+      message:
+        'Classe de consumo inválida. Valores permitidos: residential, industrial, commercial, rural, publicPower.',
+    }),
 
-  tariffModality: z.enum(
-    [
-      TariffModalityEnum.CONVENTIONAL,
-      TariffModalityEnum.WHITE,
-      TariffModalityEnum.GREEN,
-      TariffModalityEnum.BLUE,
-    ],
-    {
-      errorMap: () => ({
-        message:
-          'Modalidade tarifária inválida. Valores permitidos: conventional, white, green, blue.',
-      }),
-    }
-  ),
+  tariffModality: z
+    .string({ required_error: 'Modalidade tarifária é obrigatória' })
+    .refine(val => tariffModalityNames.includes(val), {
+      message:
+        'Modalidade tarifária inválida. Valores permitidos: conventional, white, green, blue.',
+    }),
 
   consumptionHistory: z
     .array(
@@ -65,4 +50,10 @@ export const EligibilityInputDTO = z.object({
     )
     .min(3, { message: 'O histórico de consumo deve conter no mínimo 3 valores' })
     .max(12, { message: 'O histórico de consumo deve conter no máximo 12 valores' }),
+
+  consumptionSubClass: z
+    .string({ required_error: 'Subclasse de consumo é obrigatória' })
+    .refine(val => consumptionSubClassNames.includes(val), {
+      message: 'Subclasse de consumo inválida.',
+    }),
 });

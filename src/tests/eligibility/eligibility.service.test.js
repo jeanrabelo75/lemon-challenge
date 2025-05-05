@@ -6,6 +6,7 @@ describe('Eligibility Service', () => {
       documentNumber: '14041737706',
       connectionType: 'biphase',
       consumptionClass: 'commercial',
+      consumptionSubClass: 'commercial',
       tariffModality: 'conventional',
       consumptionHistory: [3878, 9760, 5976, 2797, 2481, 5731, 7538, 4392, 7859, 4160, 6941, 4597],
     };
@@ -21,6 +22,7 @@ describe('Eligibility Service', () => {
       documentNumber: '21554495008',
       connectionType: 'biphase',
       consumptionClass: 'rural',
+      consumptionSubClass: 'agropecuariaRural',
       tariffModality: 'conventional',
       consumptionHistory: [500, 600, 700],
     };
@@ -37,6 +39,7 @@ describe('Eligibility Service', () => {
       documentNumber: '21554495008',
       connectionType: 'biphase',
       consumptionClass: 'commercial',
+      consumptionSubClass: 'commercial',
       tariffModality: 'green',
       consumptionHistory: [500, 600, 700],
     };
@@ -53,6 +56,7 @@ describe('Eligibility Service', () => {
       documentNumber: '21554495008',
       connectionType: 'biphase',
       consumptionClass: 'residential',
+      consumptionSubClass: 'residential',
       tariffModality: 'conventional',
       consumptionHistory: [100, 120, 130],
     };
@@ -68,8 +72,9 @@ describe('Eligibility Service', () => {
     const input = {
       documentNumber: '21554495008',
       connectionType: 'monophase',
-      consumptionClass: 'poderPublico',
-      tariffModality: 'azul',
+      consumptionClass: 'publicPower',
+      consumptionSubClass: 'publicPowerState',
+      tariffModality: 'blue',
       consumptionHistory: [100, 120, 130],
     };
 

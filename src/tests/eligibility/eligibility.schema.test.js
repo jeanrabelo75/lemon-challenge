@@ -1,6 +1,6 @@
 import { EligibilityInputDTO } from '../../dtos/eligibility.input.dto.js';
 
-describe('EligibilityInputSchema', () => {
+describe('EligibilityInputDTO', () => {
   it('should reject invalid document number', () => {
     const result = EligibilityInputDTO.safeParse({
       documentNumber: '12345678900',
@@ -8,6 +8,7 @@ describe('EligibilityInputSchema', () => {
       consumptionClass: 'commercial',
       tariffModality: 'conventional',
       consumptionHistory: [1000, 2000, 3000],
+      consumptionSubClass: 'commercial',
     });
 
     expect(result.success).toBe(false);
@@ -21,6 +22,7 @@ describe('EligibilityInputSchema', () => {
       consumptionClass: 'commercial',
       tariffModality: 'conventional',
       consumptionHistory: [1000, 2000, 3000],
+      consumptionSubClass: 'commercial',
     });
 
     expect(result.success).toBe(true);

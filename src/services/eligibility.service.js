@@ -1,42 +1,11 @@
 import {
-  ConsumptionClassEnum,
-  TariffModalityEnum,
-  ConnectionTypeEnum,
+  ConsumptionClasses,
+  TariffModalities,
+  ConnectionTypes,
 } from '../domain/eligibility.enums.js';
 
-const ALLOWED_CLASSES = [
-  ConsumptionClassEnum.RESIDENTIAL,
-  ConsumptionClassEnum.INDUSTRIAL,
-  ConsumptionClassEnum.COMMERCIAL,
-];
-
-const ALLOWED_MODALITIES = [TariffModalityEnum.CONVENTIONAL, TariffModalityEnum.WHITE];
-
-const MINIMUM_CONSUMPTION = {
-  [ConnectionTypeEnum.MONOPHASE]: 400,
-  [ConnectionTypeEnum.BIPHASE]: 500,
-  [ConnectionTypeEnum.TRIPHASE]: 750,
-};
-
 export function execute(data) {
-  const { connectionType, consumptionClass, tariffModality, consumptionHistory } = data;
-
-  const reasons = [];
-
-  if (!ALLOWED_CLASSES.includes(consumptionClass)) {
-    reasons.push('Classe de consumo não aceita');
-  }
-
-  if (!ALLOWED_MODALITIES.includes(tariffModality)) {
-    reasons.push('Modalidade tarifária não aceita');
-  }
-
-  const averageConsumption = calculateAverageConsumption(consumptionHistory);
-  const minimumRequired = MINIMUM_CONSUMPTION[connectionType];
-
-  if (averageConsumption < minimumRequired) {
-    reasons.push('Consumo muito baixo para tipo de conexão');
-  }
+  const reasons = validateEligibility(data);
 
   if (reasons.length > 0) {
     return {
@@ -45,19 +14,58 @@ export function execute(data) {
     };
   }
 
+  const averageConsumption = calculateAverageConsumption(data.consumptionHistory);
   return {
     eligible: true,
     annualCO2Savings: calculateAnnualCO2Savings(averageConsumption),
   };
 }
 
-const calculateAverageConsumption = history => {
-  const last12Months = history.slice(0, 12);
-  const total = last12Months.reduce((sum, month) => sum + month, 0);
-  return total / last12Months.length;
-};
+function validateEligibility(data) {
+  const {
+    connectionType,
+    consumptionClass,
+    tariffModality,
+    consumptionHistory,
+    consumptionSubClass,
+  } = data;
 
-const calculateAnnualCO2Savings = averageConsumption => {
-  const savings = (averageConsumption * 12 * 84) / 1000;
-  return parseFloat(savings.toFixed(2));
-};
+  const reasons = [];
+
+  const classEntry = ConsumptionClasses.find(c => c.name === consumptionClass);
+  const isInvalidClass = !classEntry || !classEntry.allowed;
+  const isInvalidSubClass = classEntry && !classEntry.subclasses.includes(consumptionSubClass);
+
+  if (isInvalidClass) {
+    reasons.push('Classe de consumo não aceita');
+  }
+
+  if (!isInvalidClass && isInvalidSubClass) {
+    reasons.push('Subclasse não é permitida');
+  }
+
+  const modalityEntry = TariffModalities.find(t => t.name === tariffModality);
+  if (!modalityEntry || !modalityEntry.allowed) {
+    reasons.push('Modalidade tarifária não aceita');
+  }
+
+  const averageConsumption = calculateAverageConsumption(consumptionHistory);
+  const requiredMinimum = ConnectionTypes[connectionType];
+  if (averageConsumption < requiredMinimum) {
+    reasons.push('Consumo muito baixo para tipo de conexão');
+  }
+
+  return reasons;
+}
+
+function calculateAverageConsumption(history) {
+  const last12Months = history.slice(0, 12);
+  const total = last12Months.reduce((sum, val) => sum + val, 0);
+  return total / last12Months.length;
+}
+
+function calculateAnnualCO2Savings(averageConsumption) {
+  const yearlyConsumption = averageConsumption * 12;
+  const kgCO2 = (yearlyConsumption * 84) / 1000;
+  return parseFloat(kgCO2.toFixed(2));
+}

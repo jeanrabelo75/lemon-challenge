@@ -9,6 +9,7 @@ describe('POST /eligibility', () => {
         documentNumber: '21554495008',
         connectionType: 'biphase',
         consumptionClass: 'commercial',
+        consumptionSubClass: 'commercial',
         tariffModality: 'conventional',
         consumptionHistory: [4000, 5000, 6000],
       });
@@ -33,6 +34,7 @@ describe('POST /eligibility', () => {
         documentNumber: '12345678900',
         connectionType: 'biphase',
         consumptionClass: 'commercial',
+        consumptionSubClass: 'commercial',
         tariffModality: 'conventional',
         consumptionHistory: [4000, 5000, 6000],
       });
