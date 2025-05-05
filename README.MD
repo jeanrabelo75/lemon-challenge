@@ -39,6 +39,7 @@ Checks if a client is eligible based on the submitted data.
   "documentNumber": "14041737706",
   "connectionType": "biphase",
   "consumptionClass": "commercial",
+  "consumptionSubClass": "commercial",
   "tariffModality": "conventional",
   "consumptionHistory": [
     3878, 9760, 5976, 2797, 2481, 5731,
